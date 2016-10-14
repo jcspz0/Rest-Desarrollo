@@ -17,6 +17,10 @@ class Umov extends Model
     	//$base='jcspz0.hol.es';
         $base='localhost';
 
+        if(!Umov::authentication($login, $enviroment, $password)){
+            return null;
+        }
+
         $clientToken = new Client([
             // Base URI is used with relative requests
             // 'base_uri' => 'http://'.$base.'/Rest/public/',
@@ -52,17 +56,46 @@ class Umov extends Model
             if ($e->hasResponse()) {
                 echo Psr7\str($e->getResponse());
             }
-            echo "hubo un problema en la autenticacion";
+            echo "hubo un problema en el retorno del token";
             return null;
         }
     }
 
-    
+    public static function authentication($login, $enviroment, $password){
+        $client = new Client([
+            'base_uri' => 'https://api.umov.me/CenterWeb/api/',
+            ]);
+        $tipo_dato = 'form_params';
+        $dato = '<authentication>
+                    <login>'.$login.'</login>
+                    <password>'.$password.'</password>
+                    <domain>'.$enviroment.'</domain>
+                </authentication>'; 
+        try{
+            $response = $client->request('POST','authentication.xml', [ $tipo_dato => ['data' => $dato]]);
+            $array = Convert::convertXMLtoJSON($response->getBody());
+            $token = $array['statusCode'];
+            // if($token == '200'){
+            //     return true;
+            // }else{
+            //     return false;
+            // }
+            return $token;
+        }catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
+            echo "hubo un problema en la autenticacion";
+            return null;
+        }        
+    }
  
     public static function getListAgents($token){
     	$client = new Client([
     		'base_uri' => 'https://api.umov.me/CenterWeb/api/',
     		]);
+
     }
 
 }
