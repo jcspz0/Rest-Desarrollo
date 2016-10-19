@@ -16,6 +16,8 @@ Route::resource('callback','CallbackController');
 
 Route::resource('guz','GuzzleController');
 
+Route::resource('external','ExternalConnectionController');
+
 Route::get('/', function () {
 	// $xml = XmlParser::load('<api><user followers="5"><id>1</id><email>crynobone@gmail.com</email></user></api>');
 	// $user = $xml->parse([
