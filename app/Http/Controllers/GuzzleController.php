@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Umov\Login;
-use App\Model\Umov\Activity;
-use App\Model\Umov\Umov;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,6 +10,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 
+use App\Umov;
 
 class GuzzleController extends Controller
 {
@@ -30,7 +28,8 @@ class GuzzleController extends Controller
             'base_uri' => 'http://localhost/Rest-Desarrollo/public/',
             ]);
         $tipo_dato = 'form_params';
-        $response = $client->request('POST','guz',
+        $response = $client->
+            request('POST','guz',
                 [ $tipo_dato => 
                     ['login' => $login ,
                      'enviroment' => $enviroment ,
@@ -62,15 +61,12 @@ class GuzzleController extends Controller
         $login = $request->Input('login');
         $enviroment = $request->Input('enviroment');
         $password = $request->Input('password');
+
         $token = Umov::getToken($login, $enviroment, $password);
-        $activities = Umov::getDataById($token, "agent",259735);
-        //$activities = Umov::postDataById($token, "agent",259735,"<agent><name>Jc</name></agent>");
-        //$activities = Umov::getAllActivitiesIdBy($token,'description','realizar pedido');
-        //$result = Umov::getActivityById($token,$activities[0]);
         if($token == null){
-            return "ha fallado el getActiviries";
+            return "ha fallado la autenticacion";
         }
-        return $activities;
+        return $token;
     }
 
     /**

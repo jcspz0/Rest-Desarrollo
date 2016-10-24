@@ -14,7 +14,6 @@ class VerifyCsrf extends \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
     protected $routes = [
         'external',
         'callback',
-        'guz',
     ];
 
     /**
