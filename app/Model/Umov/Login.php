@@ -1,23 +1,37 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: micrium
+ * Date: 21/10/2016
+ * Time: 03:16 PM
+ */
 
-namespace App;
-
-use Illuminate\Database\Eloquent\Model;
+namespace App\Model\Umov;
 
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 
-use Convert;
+use App\Utils\Convert;
 
-class Umov extends Model
+class Login
 {
     public static function getToken($login, $enviroment, $password){
-    	//$base='jcspz0.hol.es';
+        /**
+         * devuelve el token del ambiente al que quiere ingresar, pasando primero por una autenticacion
+         *
+         * @access public
+         * @param String $login el login del usuario
+         * @param String $enviroment el ambiente de uMov
+         * @param String $password contrasenia del usuario
+         * @return String $token retorna el doken del ambiente
+         * @throws Exception ocurre una exception cuando la informacion de logueo es incorrecta, retorna null
+         */
+        //$base='jcspz0.hol.es';
         $base='localhost';
 
-        if(!Umov::authentication($login, $enviroment, $password)){
+        if(!Login::authentication($login, $enviroment, $password)){
             return null;
         }
 
@@ -45,7 +59,7 @@ class Umov extends Model
                     <login>'.$login.'</login>
                     <password>'.$password.'</password>
                     <domain>'.$enviroment.'</domain>
-                </apiToken>';  
+                </apiToken>';
         try{
             $response = $clientToken->request('POST','token.xml',[ $tipo_dato => ['data' => $dato]]);
             $array = Convert::convertXMLtoJSON($response->getBody());
@@ -61,16 +75,27 @@ class Umov extends Model
         }
     }
 
-    public static function authentication($login, $enviroment, $password){
+    public static function authentication($login, $enviroment, $password)
+    {
+        /**
+         * verifica si los credenciales ingresados son validos para uMov
+         *
+         * @access public
+         * @param String $login el login del usuario
+         * @param String $enviroment el ambiente de uMov
+         * @param String $password contrasenia del usuario
+         * @return String $token retorna el statusCode de la validacion, 200 si es correcta, otro si no lo es
+         * @throws Exception ocurre una exception cuando la informacion de logueo es incorrecta, retorna null
+         */
         $client = new Client([
             'base_uri' => 'https://api.umov.me/CenterWeb/api/',
-            ]);
+        ]);
         $tipo_dato = 'form_params';
         $dato = '<authentication>
                     <login>'.$login.'</login>
                     <password>'.$password.'</password>
                     <domain>'.$enviroment.'</domain>
-                </authentication>'; 
+                </authentication>';
         try{
             $response = $client->request('POST','authentication.xml', [ $tipo_dato => ['data' => $dato]]);
             $array = Convert::convertXMLtoJSON($response->getBody());
@@ -88,14 +113,7 @@ class Umov extends Model
             }
             echo "hubo un problema en la autenticacion";
             return null;
-        }        
-    }
- 
-    public static function getListAgents($token){
-    	$client = new Client([
-    		'base_uri' => 'https://api.umov.me/CenterWeb/api/',
-    		]);
-
+        }
     }
 
 }

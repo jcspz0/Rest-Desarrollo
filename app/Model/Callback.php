@@ -1,24 +1,24 @@
 <?php
 
-namespace App;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Log extends Model
+class Callback extends Model
 {
-    /**
+	/**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'logs';
+    protected $table = 'callbacks';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['log'];
+    protected $fillable = ['alternativeIdentifier', 'activity_history_id'];
 
     /**
      * The attributes excluded from the model's JSON form.
