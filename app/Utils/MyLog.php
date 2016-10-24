@@ -11,12 +11,19 @@ namespace App\Utils;
 
 
 
-use App\Log;
+use App\Model\Log;
 
 class MyLog
 {
     public static function registrar($dato)
     {
+        /**
+         * registra en la base de datos, en la tabla logs, en el campo log la cadena que se ha enviado de $dato
+         *
+         * @access public
+         * @param String $dato cadena que se requiera guardar en log
+         * @return null no retorna nada
+         */
         Log::create([
             'log' => $dato,
         ]);

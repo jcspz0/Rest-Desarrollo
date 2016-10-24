@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Callback as Callback;
+use App\Model\Callback as Callback;
 
 use App\Utils\Convert;
 use App\Utils\MyLog;
@@ -44,10 +44,12 @@ class CallbackController extends Controller
      */
     public function store(Request $request)
     {
+        $peticion=$request->request->getIterator();
+        $key=$peticion->key();
         MyLog::registrar('ingresaron al servicio por POST');
         $salida='hubo un error en el proceso de todo el servicio';
         try{
-            $array = Convert::convertXMLtoJSON($request->input('data'));
+            $array = Convert::convertXMLtoJSON($request->input($key));
             $task = $array['alternativeIdentifier'];
             $activities = $array['activityHistories'];
             foreach ($activities as $act) {
